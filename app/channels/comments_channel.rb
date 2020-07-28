@@ -1,3 +1,4 @@
+#*DTA Here!
 class CommentsChannel < ApplicationCable::Channel
   def follow(data)
     stop_all_streams
