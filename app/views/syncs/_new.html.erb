@@ -1,0 +1,4 @@
+<%= form_for [ Sync.new ], remote: true do |form| %>
+  <%= form.text_area :content, size: '80x5' %><br>
+  <%= form.submit 'Create Sync' %>
+<% end %>

@@ -2,6 +2,7 @@ App.comments = App.cable.subscriptions.create "CommentsChannel",
   collection: -> $("[data-channel='comments']")
 
   connected: ->
+    console.log 'comments.coffee: connected() called'
     # FIXME: While we wait for cable subscriptions to always be finalized before sending messages
     setTimeout =>
       @followCurrentMessage()
@@ -16,8 +17,10 @@ App.comments = App.cable.subscriptions.create "CommentsChannel",
 
   followCurrentMessage: ->
     if messageId = @collection().data('message-id')
+      console.log 'comments.coffee: followCurrentSync() follow messageId: ' + messageId
       @perform 'follow', message_id: messageId
     else
+      console.log 'comments.coffee: followCurrentSync() unfollow'
       @perform 'unfollow'
 
   installPageChangeCallback: ->

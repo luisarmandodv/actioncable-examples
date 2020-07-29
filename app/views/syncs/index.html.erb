@@ -1,0 +1,11 @@
+<h1>Syncs</h1>
+<p>You should only ever see syncs created by the currently logged-in user.</p>
+
+<!-- syncs.coffee uses these data attributes: -->
+<ul id="syncs" data-channel="syncs" data-user-id="<%= @current_user.id %>">
+  <% @syncs.each do |sync| %>
+    <li><%= sync.content %> by <%= sync.user.name %></li>
+  <% end %>
+</ul>
+
+<%= render 'syncs/new' %>

@@ -1,3 +1,4 @@
+#*DTA Here!
 Rails.application.routes.draw do
   resource  :session
   resources :examples
@@ -5,6 +6,8 @@ Rails.application.routes.draw do
   resources :messages do
     resources :comments
   end
+
+  resources :syncs
 
   root 'examples#index'
 end

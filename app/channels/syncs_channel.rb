@@ -1,9 +1,9 @@
-#*DTA Here!
-class CommentsChannel < ApplicationCable::Channel
+class SyncsChannel < ApplicationCable::Channel
   def follow(data)
     stop_all_streams # Unsubscribes all streams associated with this channel from the pubsub queue. I'm not sure if this belongs in follow.
-    Rails.logger.debug("hi we're following a commentschannel")
-    stream_from "messages:#{data['message_id'].to_i}:comments"
+    stream_name = "integration_name:#{data['user_id'].to_i}:sync"
+    puts "follow() stream #{stream_name}"
+    stream_from stream_name
   end
 
   def unfollow
