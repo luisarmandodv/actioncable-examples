@@ -4,7 +4,7 @@ class RickController < ActionController::Base
 
   protect_from_forgery with: :exception
 
-  def index  render partial: 'index'
+  def index
 
     render partial: 'index'
 

@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   end
 
   resources :syncs
+  resources :rick
 
   root 'examples#index'
 end

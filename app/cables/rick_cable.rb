@@ -3,6 +3,6 @@ class RickCable < BaseCable
     a = 1
     b = 2
 
-    stream partial: "rick/rick", locals: { a: a, b: b }
+    stream partial: "rick/rick", locals: { foo: 'foo', bar: 'bar' }
   end
 end
