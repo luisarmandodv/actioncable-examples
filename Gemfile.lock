@@ -1,3 +1,12 @@
+GIT
+  remote: https://github.com/vincentmendiola/get_schwifty.git
+  revision: 1c5a09a4b8e63dd0831ea293ab7e917222ee5ef1
+  branch: feature/refactored-loading
+  tag: v1.0.2
+  specs:
+    get_schwifty (0.2.0)
+      rails (> 5)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -146,6 +155,7 @@ PLATFORMS
 DEPENDENCIES
   byebug
   coffee-rails (~> 4.2)
+  get_schwifty!
   jbuilder (~> 2.0)
   jquery-rails
   puma
@@ -159,4 +169,4 @@ DEPENDENCIES
   web-console
 
 BUNDLED WITH
-   1.15.1
+   1.17.3
