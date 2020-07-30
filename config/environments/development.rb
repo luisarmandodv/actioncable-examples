@@ -41,7 +41,7 @@ Rails.application.configure do
 
   #*DTA HERE
   # Set Action Cable server url for consumer connection
-  config.action_cable.url = 'ws://localhost:28080'
+  #config.action_cable.url = 'ws://localhost:28080'
 
   ActionCable.server.config.logger = Logger.new("log/cables.log")
 end

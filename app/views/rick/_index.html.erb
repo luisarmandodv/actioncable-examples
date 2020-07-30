@@ -1,5 +1,14 @@
-<%= get_schwifty "rick_cable#rick" do %>
+<%= get_schwifty "rick#rick" do %>
 
 Loading :D
 
 <%- end %>
+
+<%= javascript_tag do %>
+  (function() {
+    setTimeout(function() {
+      console.log('go');
+      GetSchwifty(App).showMeWhatYouGot();
+    }, 2000);
+  }())
+<%end%> 
