@@ -1,13 +1,10 @@
 # Can work off of InsightsController
 
-class RickController < ActionController::Base
+class RickController < ApplicationController
 
   protect_from_forgery with: :exception
 
   def index
-
-    render partial: 'index'
-
   end
 
 end
