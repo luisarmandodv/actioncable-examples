@@ -9,6 +9,7 @@ Rails.application.routes.draw do
 
   resources :syncs
   resources :rick
+  resources :integration
 
   root 'examples#index'
 end
