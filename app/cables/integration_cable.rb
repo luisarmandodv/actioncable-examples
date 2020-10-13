@@ -42,7 +42,10 @@ class IntegrationCable < BaseCable
 #*DTA TODO REDUCE AMOUNT OF DATA RETURNED
     stream_json({
       statistics: [{:beanstack_profile_id=>101, :first_name=>"Avery", :books=>12, :minutes=>300, :sessions=>2500, :pages=>25}, {:beanstack_profile_id=>102, :first_name=>"Dave", :books=>1, :minutes=>60, :sessions=>2, :pages=>50}, {:beanstack_profile_id=>103, :first_name=>"Robert", :books=>3, :minutes=>120, :sessions=>5, :pages=>100}],
-      earned_badges: [{"id"=>nil, "profile_id"=>nil, "badge_id"=>nil, "created_at"=>nil, "updated_at"=>nil, "reward_id"=>nil, "microsite_id"=>nil, "library_branch_id"=>nil, "earnable_type"=>"Program", "earnable_id"=>12989, "program_id"=>12989, "profile_weight"=>1, "badge_type"=>"registration"}, {"id"=>nil, "profile_id"=>nil, "badge_id"=>nil, "created_at"=>nil, "updated_at"=>nil, "reward_id"=>nil, "microsite_id"=>nil, "library_branch_id"=>nil, "earnable_type"=>"Program", "earnable_id"=>12989, "program_id"=>12989, "profile_weight"=>1, "badge_type"=>"registration"}]
+      earned_badges: [
+        {"earned_badge_title"=>"Read for 5 minutes", "earned_badge_image_url"=>"https://dowvq86h33m3d.cloudfront.net/badges/40213/thumb/helmet.png?1601503033", "unlock_description"=>"Earned for reading 5m"},
+        {"earned_badge_title"=>"Read 10 pages", "earned_badge_image_url"=>"https://dowvq86h33m3d.cloudfront.net/badges/40214/thumb/helmet.png?1601503787", "unlock_description"=>"Earned for reading 10 pages"}
+      ]
     })
 
     #SUCCESS SUCCESS_NO_EARNED_BADGES
