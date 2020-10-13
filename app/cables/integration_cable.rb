@@ -1,17 +1,4 @@
 class IntegrationCable < BaseCable
-  def login_fail
-    stream_json({
-      message: 'Sign in failed. Please try again.',
-      type: 'LOGIN_FAIL'
-    })
-  end
-
-  def login_reader_list_fail_name
-    stream_json({
-      message: 'Two or more names on your Epic account are the same. Please visit the Epic website and give each of your Epic readers a unique name. You can add a middle initial or a number to make names unique.',
-      type: 'READER_LIST_FAIL_NAME'
-    })
-  end
 
   def login_and_fetch_readers
     return if invalid_login_params?
@@ -33,23 +20,26 @@ class IntegrationCable < BaseCable
 
   end
 
+  def login_fail
+    stream_json({
+      message: 'Sign in failed. Please try again.',
+      type: 'LOGIN_FAIL'
+    })
+  end
+
+  def login_reader_list_fail_name
+    stream_json({
+      message: 'Two or more names on your Epic account are the same. Please visit the Epic website and give each of your Epic readers a unique name. You can add a middle initial or a number to make names unique.',
+      type: 'READER_LIST_FAIL_NAME'
+    })
+  end
+
+
+
   def sync_readers
-    if ENV['EPIC_INTEGRATION_DEV_MODE'] == 'SYNC_FAIL_LOCKED' # SYNC_FAIL_EPIC_BROKE_API
-      stream_json({
-        message: "Oh no! Importing is disconnected. We're working on it. Please try again later.",
-        type: 'SYNC_FAIL_LOCKED'
-      })
-      return
-    end
+    return if invalid_sync_params?
+
 #*DTA TODO REDUCE AMOUNT OF DATA RETURNED
-    if ENV['EPIC_INTEGRATION_DEV_MODE'] == 'SUCCESS_NO_EARNED_BADGES'
-      stream_json({
-        statistics: [{:beanstack_profile_id=>101, :first_name=>"Avery", :books=>12, :minutes=>300, :sessions=>2500, :pages=>25}, {:beanstack_profile_id=>102, :first_name=>"Dave", :books=>1, :minutes=>60, :sessions=>2, :pages=>50}, {:beanstack_profile_id=>103, :first_name=>"Robert", :books=>3, :minutes=>120, :sessions=>5, :pages=>100}],
-        earned_badges: []
-      })
-
-    end
-
     stream_json({
       statistics: [{:beanstack_profile_id=>101, :first_name=>"Avery", :books=>12, :minutes=>300, :sessions=>2500, :pages=>25}, {:beanstack_profile_id=>102, :first_name=>"Dave", :books=>1, :minutes=>60, :sessions=>2, :pages=>50}, {:beanstack_profile_id=>103, :first_name=>"Robert", :books=>3, :minutes=>120, :sessions=>5, :pages=>100}],
       earned_badges: [{"id"=>nil, "profile_id"=>nil, "badge_id"=>nil, "created_at"=>nil, "updated_at"=>nil, "reward_id"=>nil, "microsite_id"=>nil, "library_branch_id"=>nil, "earnable_type"=>"Program", "earnable_id"=>12989, "program_id"=>12989, "profile_weight"=>1, "badge_type"=>"registration"}, {"id"=>nil, "profile_id"=>nil, "badge_id"=>nil, "created_at"=>nil, "updated_at"=>nil, "reward_id"=>nil, "microsite_id"=>nil, "library_branch_id"=>nil, "earnable_type"=>"Program", "earnable_id"=>12989, "program_id"=>12989, "profile_weight"=>1, "badge_type"=>"registration"}]
@@ -57,6 +47,20 @@ class IntegrationCable < BaseCable
 
     #SUCCESS SUCCESS_NO_EARNED_BADGES
 
+  end
+
+  def sync_readers_fail_locked
+    stream_json({
+      message: "Oh no! Importing is disconnected. We're working on it. Please try again later.",
+      type: 'SYNC_FAIL_LOCKED'
+    })
+  end
+
+  def sync_readers_success_no_earned_badges
+    stream_json({
+      statistics: [{:beanstack_profile_id=>101, :first_name=>"Avery", :books=>12, :minutes=>300, :sessions=>2500, :pages=>25}, {:beanstack_profile_id=>102, :first_name=>"Dave", :books=>1, :minutes=>60, :sessions=>2, :pages=>50}, {:beanstack_profile_id=>103, :first_name=>"Robert", :books=>3, :minutes=>120, :sessions=>5, :pages=>100}],
+      earned_badges: []
+    })
   end
 
   def stream_json(data)
@@ -81,6 +85,29 @@ class IntegrationCable < BaseCable
       return true
     end
     return false
+  end
+
+  def invalid_sync_params?
+    begin
+      ['epic_raw_cookie_string', 'current_beanstack_profile_id', 'readers_to_sync'].each do |k|
+        raise "Required parameter was not passed: params['#{k}']" unless params.key?(k)
+      end
+      params['readers_to_sync'].each_with_index do |reader_to_sync, i|
+        ['epic_id', 'epic_name', 'beanstack_profile_id'].each do |k|
+          raise "Required parameter was not passed: params['readers_to_sync'][#{i}]['#{k}']" unless params['readers_to_sync'][i].key?(k)
+        end
+      end
+    rescue Exception => e
+      # Only happens if bad arguments.
+      stream_json({
+        message: 'Unspecified error.',
+        exception_message: e.message,
+        type: 'SYNC_EXCEPTION'
+      })
+      return true
+    end
+    return false
+
   end
 
 end
