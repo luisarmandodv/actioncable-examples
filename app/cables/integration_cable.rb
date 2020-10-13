@@ -1,37 +1,20 @@
 class IntegrationCable < BaseCable
+  def login_fail
+    stream_json({
+      message: 'Sign in failed. Please try again.',
+      type: 'LOGIN_FAIL'
+    })
+  end
+
+  def login_reader_list_fail_name
+    stream_json({
+      message: 'Two or more names on your Epic account are the same. Please visit the Epic website and give each of your Epic readers a unique name. You can add a middle initial or a number to make names unique.',
+      type: 'READER_LIST_FAIL_NAME'
+    })
+  end
+
   def login_and_fetch_readers
-
-    begin
-      ['cable_auth', 'epic_account', 'current_beanstack_profile_id'].each do |k|
-        raise "Required parameter was not passed: params['#{k}']" unless params.key?(k)
-      end
-      ['encrypted_data', 'user_id'].each do |k|
-        raise "Required parameter was not passed: params['cable_auth']['#{k}']" unless params['cable_auth'].key?(k)
-      end
-    rescue Exception => e
-      # Only happens if bad arguments.
-      stream_json({
-        message: 'Unspecified error.',
-        exception_message: e.message,
-        type: 'LOGIN_EXCEPTION'
-      })
-    end
-
-    if ENV['EPIC_INTEGRATION_DEV_MODE'] == 'LOGIN_FAIL' # LOGIN_FAIL_LOCKED, LOGIN_FAIL_RESPONSE_BODY_NULL, READER_LIST_FAIL_EPIC_BROKE_API
-      stream_json({
-        message: 'Sign in failed. Please try again.',
-        type: 'LOGIN_FAIL'
-      })
-      return
-    end
-
-    if ENV['EPIC_INTEGRATION_DEV_MODE'] == 'READER_LIST_FAIL_NAME'
-      stream_json({
-        message: 'Two or more names on your Epic account are the same. Please visit the Epic website and give each of your Epic readers a unique name. You can add a middle initial or a number to make names unique.',
-        type: 'READER_LIST_FAIL_NAME'
-      })
-      return
-    end
+    return if invalid_login_params?
 
     stream_json({
         epic_raw_cookie_string: '__cfduid=d2dea7f000000000000000000000000000000000000; expires=Wed, 01-Jul-20 21:52:47 GMT; path=/; domain=.getepic.com; HttpOnly; SameSite=Lax, PHPSESSID=odkb4ls0000000000000000000; path=/; domain=.getepic.com, PHPSESSID=odkb4lsn000000000000000000; expires=Thu, 11-Jun-2020 21:52:48 GMT; Max-Age=864000; path=/; samesite=strict; domain=.getepic.com; secure; HttpOnly, epic_session=8e0c5876-4120-4dbd-b551-3b83cefda5dc%3Ad9800000000000000000000000000000; expires=Wed, 01-Jul-2020 21:52:48 GMT; Max-Age=2592000; path=/; domain=.getepic.com',
@@ -78,6 +61,26 @@ class IntegrationCable < BaseCable
 
   def stream_json(data)
     stream partial: "integration/response", locals: {data: data}
+  end
+
+  def invalid_login_params?
+    begin
+      ['cable_auth', 'epic_account', 'current_beanstack_profile_id'].each do |k|
+        raise "Required parameter was not passed: params['#{k}']" unless params.key?(k)
+      end
+      ['encrypted_data', 'user_id'].each do |k|
+        raise "Required parameter was not passed: params['cable_auth']['#{k}']" unless params['cable_auth'].key?(k)
+      end
+    rescue Exception => e
+      # Only happens if bad arguments.
+      stream_json({
+        message: 'Unspecified error.',
+        exception_message: e.message,
+        type: 'LOGIN_EXCEPTION'
+      })
+      return true
+    end
+    return false
   end
 
 end
