@@ -92,9 +92,9 @@ class IntegrationCable < BaseCable
       ['epic_raw_cookie_string', 'current_beanstack_profile_id', 'readers_to_sync'].each do |k|
         raise "Required parameter was not passed: params['#{k}']" unless params.key?(k)
       end
-      params['readers_to_sync'].each_with_index do |reader_to_sync, i|
+      params['readers_to_sync'].each do |i, reader_to_sync|
         ['epic_id', 'epic_name', 'beanstack_profile_id'].each do |k|
-          raise "Required parameter was not passed: params['readers_to_sync'][#{i}]['#{k}']" unless params['readers_to_sync'][i].key?(k)
+          raise "Required parameter was not passed: params['readers_to_sync'][#{i}]['#{k}']" unless reader_to_sync.key?(k)
         end
       end
     rescue Exception => e
